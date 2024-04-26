@@ -14,6 +14,7 @@
           buildInputs = [
             pkgs.nodejs
           ];
+          runScript = "fish";
           shellHook = ''
             echo "Node.js development environment is ready."
           '';
