@@ -320,3 +320,242 @@ sequenceDiagram
     C-->>B: toggleGoOut() operates correctly
 
 ```
+
+## Challenge: constructor method
+
+```jsx
+import React from "react";
+/**
+ * Challenge: convert the class fields and arrow methods
+ * to make use of the class `constructor` method.
+ *
+ * 1. Add a constructor() method
+ * 2. Call super()
+ * 3. Initialize your state inside the constructor
+ * 4. Convert your arrow function class methods back to
+ *    regular class methods
+ * 5. Bind those class methods in the constructor method
+ */
+
+export default class App extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      count: 0,
+    };
+    this.add = this.add.bind(this);
+    this.subtract = this.subtract.bind(this);
+  }
+
+  add() {
+    this.setState((prevState) => ({ count: prevState.count + 1 }));
+  }
+
+  subtract() {
+    this.setState((prevState) => ({ count: prevState.count - 1 }));
+  }
+
+  render() {
+    return (
+      <div className="counter">
+        <button className="counter--minus" onClick={this.subtract}>
+          –
+        </button>
+        <div className="counter--count">
+          <h1>{this.state.count}</h1>
+        </div>
+        <button className="counter--plus" onClick={this.add}>
+          +
+        </button>
+      </div>
+    );
+  }
+}
+```
+
+I don't know how common this is (apparently it's not very common), but I have great difficulty remembering this `this.notThis = this.notThis.bind(this)` tongue thister. Tongue Thisler. Tongue TWISTer. 🥺
+
+`thisNotThis = thisNotThisBindThis` 🤔
+
+## Updating complex state with this.setState()
+
+```jsx
+import React from "react";
+
+/**
+ * Challenge: update the function component to a class component.
+ *
+ * Bonus: you can use class fields and arrow function methods
+ * to avoid needing to add a constructor method 😄
+ *
+ * Tip: Move the `let starIcon = ...` line into the `render` method
+ * before the `return`, since that is display logic
+ */
+
+export default class App extends React.Component {
+  state = {
+    firstName: "John",
+    lastName: "Doe",
+    phone: "+1 (719) 555-1212",
+    email: "itsmyrealname@example.com",
+    isFavorite: false,
+  };
+
+  toggleFavorite = () => {
+    this.setState((prevState) => ({ isFavorite: !prevState.isFavorite }));
+  };
+  render() {
+    let starIcon = this.state.isFavorite ? "star-filled.png" : "star-empty.png";
+
+    return (
+      <main>
+        <article className="card">
+          <img src="./images/user.png" className="card--image" />
+          <div className="card--info">
+            <img
+              src={`../images/${starIcon}`}
+              className="card--favorite"
+              onClick={this.toggleFavorite}
+            />
+            <h2 className="card--name">
+              {this.state.firstName} {this.state.lastName}
+            </h2>
+            <p className="card--contact">{this.state.phone}</p>
+            <p className="card--contact">{this.state.email}</p>
+          </div>
+        </article>
+      </main>
+    );
+  }
+}
+```
+
+Now with a `constructor()` method, because I am pedantic:
+
+```jsx
+import React from "react";
+
+/**
+ * Challenge: update the function component to a class component.
+ *
+ * Bonus: you can use class fields and arrow function methods
+ * to avoid needing to add a constructor method 😄
+ *
+ * Tip: Move the `let starIcon = ...` line into the `render` method
+ * before the `return`, since that is display logic
+ */
+export default class App extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      firstName: "John",
+      lastName: "Doe",
+      phone: "+1 (719) 555-1212",
+      email: "itsmyrealname@example.com",
+      isFavorite: false,
+    };
+    this.toggleFavorite = this.toggleFavorite.bind(this);
+  }
+
+  toggleFavorite() {
+    this.setState((prevState) => ({ isFavorite: !prevState.isFavorite }));
+  }
+
+  render() {
+    let starIcon = this.state.isFavorite ? "star-filled.png" : "star-empty.png";
+    return (
+      <main>
+        <article className="card">
+          <img src="./images/user.png" className="card--image" />
+          <div className="card--info">
+            <img
+              src={`../images/${starIcon}`}
+              className="card--favorite"
+              onClick={this.toggleFavorite}
+            />
+            <h2 className="card--name">
+              {this.state.firstName} {this.state.lastName}
+            </h2>
+            <p className="card--contact">{this.state.phone}</p>
+            <p className="card--contact">{this.state.email}</p>
+          </div>
+        </article>
+      </main>
+    );
+  }
+}
+```
+
+## Introduction to React Lifecycle Methods
+
+Prior to hooks, there were two main reasons to use a class component instead of a function component: 1. State 2. Lifecycle Methods
+
+```mermaid
+flowchart TD
+    subgraph Mounting
+        A(Constructor) -->|Render phase| B(Render)
+        B -->|Commit phase| C(ComponentDidMount)
+    end
+
+    subgraph Updating
+        D(New Props/SetState/ForceUpdate) --> E(GetDerivedStateFromProps)
+        E --> F(ShouldComponentUpdate)
+        F -->|Render phase| B
+        B -->|Pre-commit phase| G(GetSnapshotBeforeUpdate)
+        G -->|Commit phase| H(ComponentDidUpdate)
+    end
+
+    subgraph Unmounting
+        I(ComponentWillUnmount)
+    end
+
+    C --> D
+    H --> D
+    H --> I
+
+```
+
+## Lifecycle methods: componentDidMount()
+
+```jsx
+import React from "react";
+
+export default class App extends React.Component {
+  state = {
+    character: {},
+  };
+  /**
+   * Goal: get the first character from the Star Wars
+   * API and display the name on the screen
+   */
+
+  componentDidMount() {
+    console.log("componentDidMount");
+    compoDidUpdate.module;
+    fetch("https://swapi.dev/api/people/1")
+      .then((res) => res.json())
+      .then((data) => console.log(data));
+  }
+
+  render() {
+    console.log("render");
+    return <h1>Hello, World!</h1>;
+  }
+}
+```
+
+## Skip
+
+We skip the rest of the videos in this markdown file. It can be found in `src/0.extras`.
+
+## Other Lifecycle Methods
+
+### `shouldComponentUpdate()`
+
+### `static getDerivedStateFromProps()`
+
+### `getSnapshotBeforeUpdate()`
+
+This is the cliffhanger that has me feeling like the tutor is a jerk. If the point was to advertise the Advanced Course (requires a subscription), then that's okay... but not at the cost of covering the content.
+
+Otherwise, it's a good tutorial series, pretty clear.
